@@ -19,8 +19,8 @@ class TaskFactory extends Factory
         return [
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
-            'status' => fake()->randomElement(['done', 'in_progress', 'pending']),
-            'user_id' => User::factory(), 
+            'status' => fake()->randomElement(['done', 'in_progress', 'todo']),
+            'user_id' => User::factory(),
         ];
     }
 }

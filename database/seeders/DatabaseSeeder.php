@@ -16,14 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call(LaratrustSeeder::class);
+        
+        $user = User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
         ]);
+        $user->addRole('admin');
 
-        User::factory()
-            ->count(10)
-            ->hasTasks(5)
-            ->create();
+
     }
 }

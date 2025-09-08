@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TaskController extends Controller
 {
@@ -16,7 +17,9 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Auth::user()->tasks; // Relation User → Task
-        return response()->json($tasks);
+        return Inertia::render('Tasks/Index', [
+            'tasks' => $tasks
+        ]);
     }
 
     /**
