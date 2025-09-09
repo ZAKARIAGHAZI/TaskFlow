@@ -1,9 +1,11 @@
 <?php
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -27,7 +29,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard', [
+        'auth' => [
+            'user' => Auth::user(),
+            'roles' => Auth::user() ? Auth::user()->roles->pluck('name') : [],
+        ],
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -43,5 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
+Route::middleware(['auth'])->group(function () {
 
+    Route::resource('users', UserController::class);
+});
 require __DIR__.'/auth.php';

@@ -14,23 +14,31 @@ class TaskController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('admin')) {
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
             // Admin sees all tasks
             $tasks = \App\Models\Task::with('assignedUser')->get();
+            $users = \App\Models\User::all(); // all users for assignment dropdown
         } else {
-            // Normal users see only their tasks
-            $tasks = Auth::user()->tasks()->with('assignedUser')->get();
+            // Normal users see only tasks assigned to them
+            $tasks = \App\Models\Task::with('assignedUser')
+                ->where('assigned_to', $user->id)
+                ->get();
+            $users = collect([$user]); // only the current user
         }
 
-        // Only admins get all users for the assign dropdown
-        $users = Auth::user()->hasRole('admin') ? \App\Models\User::all() : collect([Auth::user()]);
-
         return Inertia::render('Tasks/TaskDashboard', [
+            'auth' => [
+                'user' => $user,
+                'roles' => $user->roles->pluck('name'),
+            ],
             'tasks' => $tasks,
             'users' => $users,
             'flash' => session('success'),
         ]);
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -42,11 +50,13 @@ class TaskController extends Controller
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 
-        $task = Auth::user()->tasks()->create([
+        // Create the task directly, assign the user
+        $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
             'status' => 'todo',
-            'assigned_to' => $request->assigned_to,
+            'user_id' => Auth::id(),            // the creator (admin)
+            'assigned_to' => $request->assigned_to, // the assigned user
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');

@@ -73,6 +73,7 @@ export default function Dashboard({ auth }) {
                 </h2>
             }
         >
+            
             <div className="p-6 space-y-6">
                 {/* Flash message */}
                 {flash?.success && (

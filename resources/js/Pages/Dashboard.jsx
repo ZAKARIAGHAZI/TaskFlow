@@ -7,7 +7,7 @@ export default function Dashboard({ auth }) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Zakir</h2>}
         >
-            <Head title="z" />
+            <Head title="Task Flow" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
