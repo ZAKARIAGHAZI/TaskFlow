@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 
+
 class User extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRolesAndPermissions;
@@ -46,6 +47,6 @@ class User extends Authenticatable implements LaratrustUser
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'user_id');
     }
 }
