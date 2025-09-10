@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { useForm, usePage, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, X, Pencil, Trash2 } from "lucide-react";
 
-// Task Form Modal
+// Task Form Modal Component
 function TaskFormModal({
     show,
     onClose,
@@ -19,43 +15,38 @@ function TaskFormModal({
 }) {
     if (!show) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg relative p-6 animate-fadeIn">
-                {/* Close Button */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                    aria-label="Close form"
                 >
-                    <X className="w-5 h-5" />
+                    ✕
                 </button>
-
-                <h2 className="text-xl font-semibold mb-6 text-gray-800">
-                    {isEditing ? "Edit Task" : "Create New Task"}
+                <h2 className="text-lg font-bold mb-4">
+                    {isEditing ? "Edit Task" : "New Task"}
                 </h2>
-
-                <form onSubmit={onSubmit} className="space-y-5">
-                    {/* Title */}
+                <form onSubmit={onSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium">
                             Title
                         </label>
                         <input
                             type="text"
                             value={data.title}
                             onChange={(e) => setData("title", e.target.value)}
-                            className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-500"
+                            className="w-full mt-1 p-2 border rounded-lg"
                             required
                         />
                         {errors.title && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <div className="text-red-600 text-sm">
                                 {errors.title}
-                            </p>
+                            </div>
                         )}
                     </div>
-
-                    {/* Description */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium">
                             Description
                         </label>
                         <textarea
@@ -63,19 +54,16 @@ function TaskFormModal({
                             onChange={(e) =>
                                 setData("description", e.target.value)
                             }
-                            className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-500"
-                            rows={3}
+                            className="w-full mt-1 p-2 border rounded-lg"
                         />
                         {errors.description && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <div className="text-red-600 text-sm">
                                 {errors.description}
-                            </p>
+                            </div>
                         )}
                     </div>
-
-                    {/* Assign */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium">
                             Assign To
                         </label>
                         <select
@@ -83,7 +71,7 @@ function TaskFormModal({
                             onChange={(e) =>
                                 setData("assigned_to", e.target.value)
                             }
-                            className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-500"
+                            className="w-full mt-1 p-2 border rounded-lg"
                             required
                         >
                             <option value="">Select user</option>
@@ -94,16 +82,14 @@ function TaskFormModal({
                             ))}
                         </select>
                         {errors.assigned_to && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <div className="text-red-600 text-sm mt-1">
                                 {errors.assigned_to}
-                            </p>
+                            </div>
                         )}
                     </div>
-
-                    {/* Status (only in editing mode) */}
                     {isEditing && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-sm font-medium">
                                 Status
                             </label>
                             <select
@@ -111,7 +97,7 @@ function TaskFormModal({
                                 onChange={(e) =>
                                     setData("status", e.target.value)
                                 }
-                                className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-500"
+                                className="w-full mt-1 p-2 border rounded-lg"
                             >
                                 <option value="todo">To Do</option>
                                 <option value="in_progress">In Progress</option>
@@ -119,22 +105,20 @@ function TaskFormModal({
                             </select>
                         </div>
                     )}
-
-                    {/* Actions */}
-                    <div className="flex justify-end gap-3 pt-4">
-                        <Button
+                    <div className="flex justify-end gap-2 mt-4">
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        >
+                            {isEditing ? "Update" : "Create"}
+                        </button>
+                        <button
                             type="button"
-                            variant="outline"
                             onClick={onClose}
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
                         >
                             Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700"
-                        >
-                            {isEditing ? "Update Task" : "Create Task"}
-                        </Button>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -142,112 +126,91 @@ function TaskFormModal({
     );
 }
 
-// Task Table
+// Task Table Component
 function TaskTable({ tasks, onEdit, onStatusChange }) {
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "done":
-                return (
-                    <Badge className="bg-green-100 text-green-700">
-                        {status}
-                    </Badge>
-                );
-            case "in_progress":
-                return (
-                    <Badge className="bg-yellow-100 text-yellow-700">
-                        {status}
-                    </Badge>
-                );
-            default:
-                return (
-                    <Badge className="bg-gray-100 text-gray-700">
-                        {status}
-                    </Badge>
-                );
-        }
-    };
-
     return (
-        <Card>
-            <CardContent className="overflow-x-auto p-0">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-gray-50 text-gray-600 text-sm">
-                            <th className="px-5 py-3">Title</th>
-                            <th className="px-5 py-3">Description</th>
-                            <th className="px-5 py-3">Status</th>
-                            <th className="px-5 py-3">Assigned To</th>
-                            <th className="px-5 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tasks.length > 0 ? (
-                            tasks.map((task) => (
-                                <tr
-                                    key={task.id}
-                                    className="border-t hover:bg-gray-50 transition"
-                                >
-                                    <td className="px-5 py-3 font-medium">
-                                        {task.title}
-                                    </td>
-                                    <td className="px-5 py-3 text-gray-600">
-                                        {task.description || "-"}
-                                    </td>
-                                    <td
-                                        className="px-5 py-3 cursor-pointer"
+        <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
+            <table className="w-full text-left border-collapse">
+                <thead>
+                    <tr className="bg-gray-100 text-gray-700">
+                        <th className="px-4 py-2">Title</th>
+                        <th className="px-4 py-2">Description</th>
+                        <th className="px-4 py-2">Status</th>
+                        <th className="px-4 py-2">Assigned To</th>
+                        <th className="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tasks.length > 0 ? (
+                        tasks.map((task) => (
+                            <tr key={task.id} className="border-t">
+                                <td className="px-4 py-2">{task.title}</td>
+                                <td className="px-4 py-2">
+                                    {task.description || "-"}
+                                </td>
+                                <td className="px-4 py-2">
+                                    <button
+                                        className={`px-2 py-1 rounded text-xs cursor-pointer focus:outline-none ${
+                                            task.status === "done"
+                                                ? "bg-green-100 text-green-700"
+                                                : task.status === "in_progress"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-gray-100 text-gray-700"
+                                        }`}
                                         onClick={() => onStatusChange(task)}
+                                        aria-label="Change status"
                                     >
-                                        {getStatusBadge(task.status)}
-                                    </td>
-                                    <td className="px-5 py-3">
-                                        {task.assigned_user?.name ||
-                                            "Unassigned"}
-                                    </td>
-                                    <td className="px-5 py-3 flex gap-2">
-                                        <Button
-                                            size="sm"
-                                            variant="secondary"
-                                            onClick={() => onEdit(task)}
-                                        >
-                                            <Pencil className="w-4 h-4 mr-1" />{" "}
-                                            Edit
-                                        </Button>
-                                        <Link
-                                            as="button"
-                                            method="delete"
-                                            href={route(
-                                                "tasks.destroy",
-                                                task.id
-                                            )}
-                                            className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
-                                        >
-                                            <Trash2 className="w-4 h-4" />{" "}
-                                            Delete
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td
-                                    colSpan="5"
-                                    className="px-5 py-6 text-center text-gray-500"
-                                >
-                                    No tasks found.
+                                        {task.status}
+                                    </button>
+                                </td>
+                                <td className="px-4 py-2">
+                                    {task.assigned_user?.name || "Unassigned"}
+                                </td>
+                                <td className="px-4 py-2 space-x-2">
+                                    <button
+                                        onClick={() => onEdit(task)}
+                                        className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                    >
+                                        Edit
+                                    </button>
+                                    <Link
+                                        as="button"
+                                        method="delete"
+                                        href={route("tasks.destroy", task.id)}
+                                        className="text-red-600 hover:underline"
+                                    >
+                                        Delete
+                                    </Link>
                                 </td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </CardContent>
-        </Card>
+                        ))
+                    ) : (
+                        <tr>
+                            <td
+                                colSpan="5"
+                                className="px-4 py-4 text-center text-gray-500"
+                            >
+                                No tasks found.
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
     );
 }
 
-// Dashboard
 export default function TaskDashboard({ auth }) {
     const { tasks, users, flash } = usePage().props;
 
+    // Task counts
+    // const counts = {
+    //     todo: tasks.filter(t => t.status === "todo").length,
+    //     in_progress: tasks.filter(t => t.status === "in_progress").length,
+    //     done: tasks.filter(t => t.status === "done").length,
+    // };
+
+    // Form for creating / editing
     const { data, setData, post, put, reset, errors } = useForm({
         id: null,
         title: "",
@@ -310,7 +273,7 @@ export default function TaskDashboard({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800">
+                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                     Task Dashboard
                 </h2>
             }
@@ -318,21 +281,37 @@ export default function TaskDashboard({ auth }) {
             <div className="p-6 space-y-6">
                 {/* Flash message */}
                 {flash?.success && (
-                    <div className="p-3 rounded-lg bg-green-100 text-green-700 shadow-sm">
+                    <div className="mb-4 p-3 rounded bg-green-100 text-green-700">
                         {flash.success}
                     </div>
                 )}
 
                 {/* Header */}
                 <div className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">Tasks</h1>
-                    <Button
+                    <h1 className="text-2xl font-bold">Task Dashboard</h1>
+                    <button
                         onClick={startCreate}
-                        className="bg-blue-600 hover:bg-blue-700"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
-                        <Plus className="w-4 h-4 mr-2" /> New Task
-                    </Button>
+                        New Task
+                    </button>
                 </div>
+
+                {/* Stats */}
+                {/* <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div className="p-4 bg-white rounded-lg text-center">
+                        <p className="text-xl font-bold">{counts.todo}</p>
+                        <p className="text-gray-600">To Do</p>
+                    </div>
+                    <div className="p-4 bg-yellow-100 rounded-lg text-center">
+                        <p className="text-xl font-bold">{counts.in_progress}</p>
+                        <p className="text-gray-600">In Progress</p>
+                    </div>
+                    <div className="p-4 bg-green-100 rounded-lg text-center">
+                        <p className="text-xl font-bold">{counts.done}</p>
+                        <p className="text-gray-600">Done</p>
+                    </div>
+                </div> */}
 
                 {/* Modal Form */}
                 <TaskFormModal
