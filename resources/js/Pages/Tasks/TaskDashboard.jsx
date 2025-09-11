@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm, usePage, Link } from "@inertiajs/react";
+import { useForm, usePage, Link, Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 // Task Form Modal Component
@@ -15,7 +15,7 @@ function TaskFormModal({
 }) {
     if (!show) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4 sm:px-0">
             <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
                 <button
                     onClick={onClose}
@@ -105,17 +105,17 @@ function TaskFormModal({
                             </select>
                         </div>
                     )}
-                    <div className="flex justify-end gap-2 mt-4">
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 w-full sm:w-auto"
                         >
                             {isEditing ? "Update" : "Create"}
                         </button>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 w-full sm:w-auto"
                         >
                             Cancel
                         </button>
@@ -126,76 +126,135 @@ function TaskFormModal({
     );
 }
 
-// Task Table Component
+// Task Table Component (responsive as cards on mobile)
 function TaskTable({ tasks, onEdit, onStatusChange }) {
     return (
-        <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
-            <table className="w-full text-left border-collapse">
-                <thead>
-                    <tr className="bg-gray-100 text-gray-700">
-                        <th className="px-4 py-2">Title</th>
-                        <th className="px-4 py-2">Description</th>
-                        <th className="px-4 py-2">Status</th>
-                        <th className="px-4 py-2">Assigned To</th>
-                        <th className="px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tasks.length > 0 ? (
-                        tasks.map((task) => (
-                            <tr key={task.id} className="border-t">
-                                <td className="px-4 py-2">{task.title}</td>
-                                <td className="px-4 py-2">
-                                    {task.description || "-"}
-                                </td>
-                                <td className="px-4 py-2">
-                                    <button
-                                        className={`px-2 py-1 rounded text-xs cursor-pointer focus:outline-none ${
-                                            task.status === "done"
-                                                ? "bg-green-100 text-green-700"
-                                                : task.status === "in_progress"
-                                                ? "bg-yellow-100 text-yellow-700"
-                                                : "bg-gray-100 text-gray-700"
-                                        }`}
-                                        onClick={() => onStatusChange(task)}
-                                        aria-label="Change status"
-                                    >
-                                        {task.status}
-                                    </button>
-                                </td>
-                                <td className="px-4 py-2">
-                                    {task.assigned_user?.name || "Unassigned"}
-                                </td>
-                                <td className="px-4 py-2 space-x-2">
-                                    <button
-                                        onClick={() => onEdit(task)}
-                                        className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                                    >
-                                        Edit
-                                    </button>
-                                    <Link
-                                        as="button"
-                                        method="delete"
-                                        href={route("tasks.destroy", task.id)}
-                                        className="text-red-600 hover:underline"
-                                    >
-                                        Delete
-                                    </Link>
+        <div className="mt-4">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto bg-white shadow rounded-lg">
+                <table className="w-full text-left border-collapse">
+                    <thead>
+                        <tr className="bg-gray-100 text-gray-700">
+                            <th className="px-4 py-2">Title</th>
+                            <th className="px-4 py-2">Description</th>
+                            <th className="px-4 py-2">Status</th>
+                            <th className="px-4 py-2">Assigned To</th>
+                            <th className="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tasks.length > 0 ? (
+                            tasks.map((task) => (
+                                <tr key={task.id} className="border-t">
+                                    <td className="px-4 py-2">{task.title}</td>
+                                    <td className="px-4 py-2">
+                                        {task.description || "-"}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        <button
+                                            className={`px-2 py-1 rounded text-xs cursor-pointer focus:outline-none ${
+                                                task.status === "done"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : task.status ===
+                                                      "in_progress"
+                                                    ? "bg-yellow-100 text-yellow-700"
+                                                    : "bg-gray-100 text-gray-700"
+                                            }`}
+                                            onClick={() => onStatusChange(task)}
+                                            aria-label="Change status"
+                                        >
+                                            {task.status}
+                                        </button>
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {task.assigned_user?.name ||
+                                            "Unassigned"}
+                                    </td>
+                                    <td className="px-4 py-2 space-x-2">
+                                        <button
+                                            onClick={() => onEdit(task)}
+                                            className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                        >
+                                            Edit
+                                        </button>
+                                        <Link
+                                            as="button"
+                                            method="delete"
+                                            href={route(
+                                                "tasks.destroy",
+                                                task.id
+                                            )}
+                                            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                                        >
+                                            Delete
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td
+                                    colSpan="5"
+                                    className="px-4 py-4 text-center text-gray-500"
+                                >
+                                    No tasks found.
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td
-                                colSpan="5"
-                                className="px-4 py-4 text-center text-gray-500"
-                            >
-                                No tasks found.
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="grid gap-4 md:hidden">
+                {tasks.length > 0 ? (
+                    tasks.map((task) => (
+                        <div
+                            key={task.id}
+                            className="p-4 bg-white rounded-lg shadow space-y-2"
+                        >
+                            <h3 className="font-bold text-lg">{task.title}</h3>
+                            <p className="text-sm text-gray-600">
+                                {task.description || "-"}
+                            </p>
+                            <div className="flex justify-between items-center">
+                                <span
+                                    className={`px-2 py-1 rounded text-xs ${
+                                        task.status === "done"
+                                            ? "bg-green-100 text-green-700"
+                                            : task.status === "in_progress"
+                                            ? "bg-yellow-100 text-yellow-700"
+                                            : "bg-gray-100 text-gray-700"
+                                    }`}
+                                >
+                                    {task.status}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                    {task.assigned_user?.name || "Unassigned"}
+                                </span>
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => onEdit(task)}
+                                    className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                >
+                                    Edit
+                                </button>
+                                <Link
+                                    as="button"
+                                    method="delete"
+                                    href={route("tasks.destroy", task.id)}
+                                    className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                                >
+                                    Delete
+                                </Link>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500">No tasks found.</p>
+                )}
+            </div>
         </div>
     );
 }
@@ -203,14 +262,6 @@ function TaskTable({ tasks, onEdit, onStatusChange }) {
 export default function TaskDashboard({ auth }) {
     const { tasks, users, flash } = usePage().props;
 
-    // Task counts
-    // const counts = {
-    //     todo: tasks.filter(t => t.status === "todo").length,
-    //     in_progress: tasks.filter(t => t.status === "in_progress").length,
-    //     done: tasks.filter(t => t.status === "done").length,
-    // };
-
-    // Form for creating / editing
     const { data, setData, post, put, reset, errors } = useForm({
         id: null,
         title: "",
@@ -278,42 +329,24 @@ export default function TaskDashboard({ auth }) {
                 </h2>
             }
         >
-            <div className="p-6 space-y-6">
-                {/* Flash message */}
+            <Head title="Task Dashboard" />
+            <div className="p-4 sm:p-6 space-y-6">
                 {flash?.success && (
                     <div className="mb-4 p-3 rounded bg-green-100 text-green-700">
                         {flash.success}
                     </div>
                 )}
 
-                {/* Header */}
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <h1 className="text-2xl font-bold">Task Dashboard</h1>
                     <button
                         onClick={startCreate}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
                     >
                         New Task
                     </button>
                 </div>
 
-                {/* Stats */}
-                {/* <div className="grid grid-cols-3 gap-4 mt-4">
-                    <div className="p-4 bg-white rounded-lg text-center">
-                        <p className="text-xl font-bold">{counts.todo}</p>
-                        <p className="text-gray-600">To Do</p>
-                    </div>
-                    <div className="p-4 bg-yellow-100 rounded-lg text-center">
-                        <p className="text-xl font-bold">{counts.in_progress}</p>
-                        <p className="text-gray-600">In Progress</p>
-                    </div>
-                    <div className="p-4 bg-green-100 rounded-lg text-center">
-                        <p className="text-xl font-bold">{counts.done}</p>
-                        <p className="text-gray-600">Done</p>
-                    </div>
-                </div> */}
-
-                {/* Modal Form */}
                 <TaskFormModal
                     show={showForm}
                     onClose={() => setShowForm(false)}
@@ -325,7 +358,6 @@ export default function TaskDashboard({ auth }) {
                     isEditing={isEditing}
                 />
 
-                {/* Task Table */}
                 <TaskTable
                     tasks={tasks}
                     onEdit={startEdit}

@@ -8,7 +8,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const roles = user.roles ? user.roles.map(role => role.name) : [];
-    console.log(" roles", roles);
     const isAdmin = roles.includes('admin');
 
     return (
@@ -158,6 +157,20 @@ export default function Authenticated({ user, header, children }) {
                             >
                                 Dashboard
                             </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                href={route("tasks.index")}
+                                active={route().current("tasks.index")}
+                            >
+                                Tasks
+                            </ResponsiveNavLink>
+                            {isAdmin && (
+                                <ResponsiveNavLink
+                                    href={route("users.index")}
+                                    active={route().current("users.index")}
+                                >
+                                    Users
+                                </ResponsiveNavLink>
+                            )}
                         </div>
 
                         <div className="pt-4 pb-1 border-t border-gray-200">

@@ -7,40 +7,31 @@ import {
     ClockIcon,
     ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-
-// Import Chart.js components
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
-// Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// A reusable StatCard component
 const StatCard = ({ title, value, icon, bgColor, textColor }) => (
     <div
-        className={`p-6 rounded-2xl shadow-md ${bgColor} transition-transform transform hover:scale-105`}
+        className={`p-4 sm:p-6 rounded-2xl shadow-md ${bgColor} transition-transform transform hover:scale-105`}
     >
         <div className="flex items-center justify-between">
-            <div className="text-sm font-medium uppercase tracking-wide text-gray-700 dark:text-gray-300">
+            <div className="text-xs sm:text-sm font-medium uppercase tracking-wide text-gray-700 dark:text-gray-300">
                 {title}
             </div>
             <div className={`p-2 rounded-full ${textColor}`}>{icon}</div>
         </div>
-        <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+        <div className="mt-2 text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
             {value}
         </div>
     </div>
 );
 
-// Destructure the `stats` prop from the Inertia page props
 export default function Dashboard({ auth, tasks }) {
-    console.log(tasks);
-    // Calculate stats from tasks array
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter((t) => t.status === "done").length;
-    const pendingTasks = tasks.filter(
-        (t) => t.status === "in_progress"
-    ).length;
+    const pendingTasks = tasks.filter((t) => t.status === "in_progress").length;
     const todoTasks = tasks.filter((t) => t.status === "todo").length;
 
     const pieChartData = {
@@ -50,9 +41,9 @@ export default function Dashboard({ auth, tasks }) {
                 label: "# of Tasks",
                 data: [todoTasks, pendingTasks, completedTasks],
                 backgroundColor: [
-                    "rgba(248, 113, 113, 0.8)", // Red for To Do
-                    "rgba(251, 191, 36, 0.8)", // Yellow for In Progress
-                    "rgba(74, 222, 128, 0.8)", // Green for Done
+                    "rgba(248, 113, 113, 0.8)",
+                    "rgba(251, 191, 36, 0.8)",
+                    "rgba(74, 222, 128, 0.8)",
                 ],
                 borderColor: [
                     "rgba(248, 113, 113, 1)",
@@ -66,6 +57,7 @@ export default function Dashboard({ auth, tasks }) {
 
     const pieChartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: "top",
@@ -75,7 +67,6 @@ export default function Dashboard({ auth, tasks }) {
             },
             title: {
                 display: false,
-                text: "Task Breakdown",
             },
             tooltip: {
                 callbacks: {
@@ -86,7 +77,7 @@ export default function Dashboard({ auth, tasks }) {
                             (sum, current) => sum + current,
                             0
                         );
-                        const percentage = ((value / total) * 100).toFixed(2);
+                        const percentage = total ? ((value / total) * 100).toFixed(2) : 0;
                         return `${label}: ${value} (${percentage}%)`;
                     },
                 },
@@ -98,8 +89,8 @@ export default function Dashboard({ auth, tasks }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex justify-between items-center">
-                    <h2 className="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
+                    <h2 className="font-semibold text-lg sm:text-2xl text-gray-800 dark:text-gray-200 leading-tight">
                         Dashboard
                     </h2>
                     <Link
@@ -113,20 +104,20 @@ export default function Dashboard({ auth, tasks }) {
             }
         >
             <Head title="Dashboard" />
-            <div className="py-10">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+            <div className="py-6 sm:py-10">
+                <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
                     {/* Welcome Section */}
-                    <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                    <div className="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                             Hello, {auth.user.name}! 👋
                         </h3>
-                        <p className="mt-2 text-gray-600 dark:text-gray-400">
+                        <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm sm:text-base">
                             Here's a quick overview of your tasks.
                         </p>
                     </div>
 
                     {/* Stats Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                         <StatCard
                             title="Total Tasks"
                             value={totalTasks}
@@ -166,12 +157,12 @@ export default function Dashboard({ auth, tasks }) {
                     </div>
 
                     {/* Chart Section */}
-                    <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    <div className="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                             Task Breakdown
                         </h3>
                         <div className="flex justify-center">
-                            <div className="w-72 h-72">
+                            <div className="w-full max-w-xs sm:max-w-sm md:max-w-md" style={{ height: 300 }}>
                                 <Pie
                                     data={pieChartData}
                                     options={pieChartOptions}
